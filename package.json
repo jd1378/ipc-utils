@@ -1,0 +1,42 @@
+{
+  "name": "ipc-utils",
+  "version": "1.0.0",
+  "description": "makes using child_process easy",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest",
+    "test-dbg": "jest --detectOpenHandles",
+    "example": "node ./examples/example1.js"
+  },
+  "files": [
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jd1378/ipc-utils.git"
+  },
+  "keywords": [
+    "ipc",
+    "util",
+    "utils",
+    "child",
+    "child_process",
+    "process",
+    "execute"
+  ],
+  "author": "javad mnjd",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "jest": "^25.2.4",
+    "prettier": "^2.0.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "uuid": "^7.0.3"
+  }
+}
