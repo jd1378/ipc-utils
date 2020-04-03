@@ -14,7 +14,7 @@ for releasing the proxy, you can use the `removeComlink` method provided by the 
 
 you can access nested objects using dot notion (it uses `lodash/get` to resolve). checkout example1 in the source to see the usage. ** **new** **: as of v2.1.0 you can ALSO use nested functions and props normally (awesome proxy handling skills :P). check out the second test of `setup.test.js` file if you want to know what I'm talking about. (intellisense is more enjoyable now)
 
-also as a bonus you can define your classes in seperate files and use jsdocs to set your proxy types to corresponding classes for intellisense support. just note that all methods are async through the proxy. this is also available in example2 in the source.
+also as a bonus you can typehint your proxies using jsdocs to set your proxy types to corresponding classes for intellisense support. just note that all methods are async through the proxy. this is also available in example2 in the source.
 
 ## usage
 
