@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0
+
+- added native dot style for automatically calling nested functions and props
+
 ## 2.0.1
 
 - just more info on the usage
