@@ -51,4 +51,21 @@ runChildMethod();
 ```
 
 Check out [example](https://github.com/jd1378/ipc-utils/blob/master/examples/example1/)
-  
+
+you can clone repo and run example1 and example2 to check it working:
+
+```bash
+npm run example1
+npm run example2
+# or
+yarn example1
+yarn example2
+```
+
+and run tests:
+
+```bash
+npm run test
+# or
+yarn test
+```
