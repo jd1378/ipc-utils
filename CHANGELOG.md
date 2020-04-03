@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+
+- just more info on the usage
+
 ## 2.0.0 (Breaking Change)
 
 - Easier usage
