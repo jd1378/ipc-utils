@@ -39,6 +39,14 @@ function requestExecute(proc, method, ...args) {
   });
 }
 
+
+function dotHandler(proc, parentPropKey, target, propKey) {
+  if (target[propKey]) return target[propKey];
+  const newPath = `${parentPropKey}.${propKey}`;
+  const requestFunc = (...args) => requestExecute.apply(this, [proc, newPath, ...args]);
+  return new Proxy(requestFunc, { get: dotHandler.bind(this, proc, newPath) });
+}
+
 /**
  *
  * @param {Process} proc
@@ -51,11 +59,14 @@ function setupProxy(proc) {
         if (propKey === symbols.removeListeners) {
           return target[propKey];
         }
-        return (...args) => requestExecute.apply(this, [proc, propKey, ...args]);
+
+        const requestFunc = (...args) => requestExecute.apply(this, [proc, propKey, ...args]);
+        return new Proxy(requestFunc, { get: dotHandler.bind(this, proc, propKey) });
       },
     },
   );
 }
+
 
 /**
  * @param {Process} proc - defaults to current process

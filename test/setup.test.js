@@ -52,5 +52,8 @@ describe('setupComlink', () => {
     expect(mock).toBeCalledTimes(1);
     const result = await testClass.proxy['parent.test']();
     expect(result).toBe('CanDo2');
+    // sugar dot notion
+    const resul2 = await testClass.proxy.parent.test();
+    expect(resul2).toBe('CanDo2');
   });
 });
