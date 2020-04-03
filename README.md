@@ -21,7 +21,7 @@ then
 const { setupComlink } = require('ipc-utils');
 class SomeClass() {
   constructor() {
-    this.parent = setupComlink.call(this);
+    this.parent = setupComlink.call(this).proxy;
   }
 
   childMethod() {
