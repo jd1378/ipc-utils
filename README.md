@@ -6,6 +6,16 @@ makes using child_process using fork easy
 
 this is experimental. use at your own risk.
 
+### A note on usage
+
+for using `setupComlink`, you have to bind `this` to the method, so it knows where to look for functions and properties when the proxy is accessed. if you don't, it will lookup `global` by default (or whatever `this` refers to in that context I guess, so don't do guess work and always bind). after calling `setupComlink` it will return a proxy which you can use it to access your child process properties and methods. currently you should call both functions and properties as methods for it to work.
+
+for releasing the proxy, you can use the `removeComlink` method provided by the package, it accepts the proxy returned by `setupComlink`.
+
+you can access nested objects using dot notion (it uses `lodash/get` to resolve). checkout example1 in the source to see the usage.
+
+also as a bonus you can define your classes in seperate files and use jsdocs to set your proxy types to corresponding classes for intellisense support. just note that all methods are async through the proxy. this is also available in example2 in the source.
+
 ## usage
 
 ```bash
