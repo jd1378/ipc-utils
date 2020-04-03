@@ -5,7 +5,8 @@ const uuidv4 = require('uuid').v4;
 const get = require('lodash/get');
 
 const symbols = {
-  removeListener: Symbol('removeListener'),
+  removeListeners: Symbol('removeListeners'),
+  removeChild: Symbol('removeChildListener'),
 };
 
 /**
@@ -17,7 +18,7 @@ function requestExecute(proc, method, ...args) {
     return Promise.reject(new Error('Process undefined'));
   }
   return new Promise((resolve, reject) => {
-    if (method === symbols.removeListener) {
+    if (method === symbols.removeChild) {
       proc.send({ release: true }, () => resolve());
       return;
     }
@@ -34,12 +35,7 @@ function requestExecute(proc, method, ...args) {
       }
     };
     proc.on('message', eventHandler);
-    const messageToSend = {
-      method,
-      uuid,
-      args,
-    };
-    proc.send(messageToSend, (error) => { if (error) { reject(error); } });
+    proc.send({ method, uuid, args }, (error) => { if (error) { reject(error); } });
   });
 }
 
@@ -52,6 +48,9 @@ function setupProxy(proc) {
     {},
     {
       get(target, propKey) {
+        if (propKey === symbols.removeListeners) {
+          return target[propKey];
+        }
         return (...args) => requestExecute.apply(this, [proc, propKey, ...args]);
       },
     },
@@ -77,9 +76,10 @@ function attachHandler(proc = process) {
     const target = get(this, message.method);
     if (typeof target === 'function') {
       try {
-        const result = await target(...message.args);
+        const result = await target.call(this, ...message.args);
         proc.send({ uuid: message.uuid, error: null, result });
       } catch (error) {
+        console.log(error);
         proc.send({ uuid: message.uuid, error, result: null });
       }
     } else if (typeof target !== 'undefined') {
@@ -105,17 +105,24 @@ function setupComlink(proc = process) {
    * @param {{handler: function, proxy: Object}} options
    * @param {Process} proc - defaults to current process
    */
-  const removeComlink = async () => {
+  const removeComlinkCommand = async () => {
     if (proc.exitCode === null) {
-      await proxy[symbols.removeListener]();
+      await proxy[symbols.removeChild]();
       proc.off('message', handler);
     }
   };
 
-  return { proxy, removeComlink };
+  proxy[symbols.removeListeners] = removeComlinkCommand;
+
+  return proxy;
+}
+
+function removeComlink(proxy) {
+  return proxy[symbols.removeListeners]();
 }
 
 
 module.exports = {
   setupComlink,
+  removeComlink,
 };

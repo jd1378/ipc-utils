@@ -17,11 +17,11 @@ yarn add ipc-utils
 then
 
 ```js
-// Child
+// child.js
 const { setupComlink } = require('ipc-utils');
 class SomeClass() {
   constructor() {
-    this.parent = setupComlink.call(this).proxy;
+    this.parent = setupComlink.call(this);
   }
 
   childMethod() {
@@ -30,19 +30,25 @@ class SomeClass() {
 }
 new SomeClass();
 
-// Parent
-const { setupComlink } = require('ipc-utils');
-const forkedProcess = forkChildSomeHow();
-const { proxy, removeComlink } = setupComlink(forkedProcess)
+// parent.js
+const { fork } = require('child_process');
+const { setupComlink, removeComlink } = require('ipc-utils');
+
+const forkedProcess = fork(
+  path.join(__dirname, 'child.js'), [], { stdio: 'inherit', execArgv: [] },
+);
+
+const proxy = setupComlink.call(this, forkedProcess);
 
 async function runChildMethod(){
   await proxy.childMethod();
+  removeComlink(proxy);
 }
 runChildMethod();
-// logs 'tada' in child
+// console logs 'tada' since the stdio is inherited in this example
 
 
 ```
 
-Check out [example](https://github.com/jd1378/ipc-utils/blob/master/examples/example1.js)
+Check out [example](https://github.com/jd1378/ipc-utils/blob/master/examples/example1/)
   

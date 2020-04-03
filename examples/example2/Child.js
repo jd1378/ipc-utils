@@ -1,4 +1,4 @@
-const { setupComlink } = require('../src/index');
+const { setupComlink } = require('../../src/index');
 
 class Child {
   constructor() {
@@ -6,7 +6,7 @@ class Child {
      * you can use jsdocs to get intellisense support on vscode for your proxy (kinda) ! :D
      * @type {import('./Parent')}
      */
-    this.parent = setupComlink.call(this).proxy;
+    this.parent = setupComlink.call(this);
   }
 
   childMethod() {

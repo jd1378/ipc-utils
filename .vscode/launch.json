@@ -14,8 +14,8 @@
       "stopOnEntry": true,
       "program": "${workspaceFolder}\\examples\\example1.js",
       "cwd": "${workspaceFolder}\\examples",
-      // "console": "integratedTerminal",
-      "console": "internalConsole",
+      "console": "integratedTerminal",
+      // "console": "internalConsole",
       "autoAttachChildProcesses": true
     },
     {

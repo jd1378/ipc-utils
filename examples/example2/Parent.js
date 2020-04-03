@@ -1,7 +1,7 @@
 const { fork } = require('child_process');
 
 const path = require('path');
-const { setupComlink } = require('../src/index');
+const { setupComlink, removeComlink } = require('../../src/index');
 
 
 class Parent {
@@ -11,7 +11,7 @@ class Parent {
 
   setupChild() {
     this.childProcess = fork(
-      path.join(__dirname, 'example1child.js'),
+      path.join(__dirname, 'example2fork.js'),
       [],
       {
         stdio: 'inherit',
@@ -19,13 +19,12 @@ class Parent {
       },
     );
 
-    const { proxy, removeComlink } = setupComlink.call(this, this.childProcess);
     /**
      * you can use jsdocs to get intellisense support on vscode for your proxy (kinda) ! :D
      * @type {import('./Child')}
      */
-    this.child = proxy;
-    this.removeComlink = removeComlink;
+    this.child = setupComlink.call(this, this.childProcess);
+    this.removeComlink = () => removeComlink(this.child);
   }
 
   parentMethod() {
