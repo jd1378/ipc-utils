@@ -79,7 +79,6 @@ function attachHandler(proc = process) {
         const result = await target.call(this, ...message.args);
         proc.send({ uuid: message.uuid, error: null, result });
       } catch (error) {
-        console.log(error);
         proc.send({ uuid: message.uuid, error, result: null });
       }
     } else if (typeof target !== 'undefined') {
