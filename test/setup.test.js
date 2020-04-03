@@ -7,6 +7,9 @@ const timeout = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('setupComlink', () => {
   let childProcess;
+  /**
+   * @type {TestClass}
+   */
   let testClass;
 
   const mock = jest.fn();
@@ -55,5 +58,14 @@ describe('setupComlink', () => {
     // sugar dot notion
     const resul2 = await testClass.proxy.parent.test();
     expect(resul2).toBe('CanDo2');
+  });
+
+  it('removeComlink function works as expected', async () => {
+    const exited = jest.fn();
+    childProcess.on('exit', exited);
+    expect(exited).not.toBeCalled();
+    await testClass.removeProxy();
+    await timeout(2000);
+    expect(exited).toBeCalled();
   });
 });
