@@ -2,7 +2,8 @@
 
 ## 2.1.0
 
-- added native dot style for automatically calling nested functions and props
+- added native dot style access for automatically calling nested functions and props
+- add test for `removeComlink`
 
 ## 2.0.1
 
