@@ -1,8 +1,12 @@
 # Changelog
 
+## 2.1.2
+
+- a very small improvement in dot handler
+
 ## 2.1.1
 
-a little bit more accurate doc
+- a little bit more accurate doc
 
 ## 2.1.0
 
