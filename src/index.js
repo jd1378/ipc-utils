@@ -41,7 +41,7 @@ function requestExecute(proc, method, ...args) {
 
 
 function dotHandler(proc, parentPropKey, target, propKey) {
-  if (target[propKey]) return target[propKey];
+  if (propKey in target) return target[propKey];
   const newPath = `${parentPropKey}.${propKey}`;
   const requestFunc = (...args) => requestExecute.apply(this, [proc, newPath, ...args]);
   return new Proxy(requestFunc, { get: dotHandler.bind(this, proc, newPath) });
