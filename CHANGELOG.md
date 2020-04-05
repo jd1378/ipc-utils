@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.3
+
+- unregister handler on process send method
+
 ## 2.1.2
 
 - a very small improvement in dot handler

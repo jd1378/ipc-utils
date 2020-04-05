@@ -35,7 +35,12 @@ function requestExecute(proc, method, ...args) {
       }
     };
     proc.on('message', eventHandler);
-    proc.send({ method, uuid, args }, (error) => { if (error) { reject(error); } });
+    proc.send({ method, uuid, args }, (error) => {
+      if (error) {
+        reject(error);
+        proc.off(eventHandler);
+      }
+    });
   });
 }
 
