@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.4
+
+- typo inside readme example
+
 ## 2.1.3
 
 - unregister handler on process send method

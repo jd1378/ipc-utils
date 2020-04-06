@@ -31,7 +31,7 @@ then
 ```js
 // child.js
 const { setupComlink } = require('ipc-utils');
-class SomeClass() {
+class SomeClass {
   constructor() {
     this.parent = setupComlink.call(this);
   }
