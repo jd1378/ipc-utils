@@ -4,7 +4,8 @@
 const { v4: uuidv4 } = require('uuid');
 const get = require('lodash/get');
 
-const IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE = 'IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE';
+const IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE =
+  'IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE';
 const IPC_UTILS_COMLINK_REMOVE_LISTENERS = 'IPC_UTILS_COMLINK_REMOVE_LISTENERS';
 
 /**
@@ -36,7 +37,7 @@ function requestExecute(proc, method, ...args) {
     proc.send({ method, uuid, args }, (error) => {
       if (error) {
         reject(error);
-        process.off('message', eventHandler);
+        proc.off('message', eventHandler);
       }
     });
   });
@@ -45,7 +46,8 @@ function requestExecute(proc, method, ...args) {
 function dotHandler(proc, parentPropKey, target, propKey) {
   if (propKey in target) return target[propKey];
   const newPath = `${parentPropKey}.${propKey}`;
-  const requestFunc = (...args) => requestExecute.apply(this, [proc, newPath, ...args]);
+  const requestFunc = (...args) =>
+    requestExecute.apply(this, [proc, newPath, ...args]);
   return new Proxy(requestFunc, { get: dotHandler.bind(this, proc, newPath) });
 }
 
@@ -63,8 +65,11 @@ function setupProxy(proc) {
           return target[propKey];
         }
 
-        const requestFunc = (...args) => requestExecute.apply(this, [proc, propKey, ...args]);
-        return new Proxy(requestFunc, { get: dotHandler.bind(this, proc, propKey) });
+        const requestFunc = (...args) =>
+          requestExecute.apply(this, [proc, propKey, ...args]);
+        return new Proxy(requestFunc, {
+          get: dotHandler.bind(this, proc, propKey),
+        });
       },
     },
   );
@@ -75,13 +80,13 @@ function setupProxy(proc) {
  */
 function attachHandler(proc = process) {
   /**
- * @param {Process} proc
- * @param {Object} message
- * @param {String} message.method - method to call
- * @param {Array} message.args - method arguments
- * @param {String} message.uuid - the method uuid
- * @param {boolean} [message.release] - if the message is a release command
- */
+   * @param {Process} proc
+   * @param {Object} message
+   * @param {String} message.method - method to call
+   * @param {Array} message.args - method arguments
+   * @param {String} message.uuid - the method uuid
+   * @param {boolean} [message.release] - if the message is a release command
+   */
   const messageHandler = async (message) => {
     if (message.release) {
       proc.off('message', messageHandler);

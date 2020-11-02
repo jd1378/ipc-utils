@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.8
+
+- fix the bug introduced by 2.1.5 ...
+- fix eslint config
+
 ## 2.1.7
 
 - add some jsdocs

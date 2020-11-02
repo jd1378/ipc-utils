@@ -1,8 +1,5 @@
 module.exports = {
-  testMatch: [
-    '**/__tests__/**/*.[jt]s?(x)',
-    '**/(*.)+(spec|test).[jt]s?(x)',
-  ],
+  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/(*.)+(spec|test).[jt]s?(x)'],
   testEnvironment: 'node',
   restoreMocks: true,
   clearMocks: true,
