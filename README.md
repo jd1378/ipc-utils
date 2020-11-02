@@ -2,9 +2,7 @@
 
 makes using child_process using fork easy
 
-## Warning
-
-this is experimental. use at your own risk.
+## Info
 
 Read the changelogs [here](https://github.com/jd1378/ipc-utils/blob/master/CHANGELOG.md)
 
@@ -14,7 +12,9 @@ for using `setupComlink`, you have to bind `this` to the method, so it knows whe
 
 for releasing the proxy, you can use the `removeComlink` method provided by the package, it accepts the proxy returned by `setupComlink`.
 
-you can access nested objects using dot notion (it uses `lodash/get` to resolve). checkout example1 in the source to see the usage. ** **new** **: as of v2.1.0 you can ALSO use nested functions and props normally (awesome proxy handling skills :P). check out the second test of `setup.test.js` file if you want to know what I'm talking about. (intellisense is more enjoyable now)
+you can access nested objects using dot notion (it uses `lodash/get` to resolve). checkout example1 in the source to see the usage.
+
+**new**: as of v2.1.0 you can ALSO use nested functions and props normally (uses proxy under the hood). check out the second test of `setup.test.js` file if you want to know what I'm talking about. (intellisense is more enjoyable now)
 
 also as a bonus you can typehint your proxies using jsdocs to set your proxy types to corresponding classes for intellisense support. just note that all methods are async through the proxy. this is also available in example2 in the source.
 

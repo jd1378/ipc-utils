@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.6
+
+- updated readme
+
 ## 2.1.5
 
 - fix: process message handler was not removed properly.
