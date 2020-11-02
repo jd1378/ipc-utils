@@ -8,7 +8,7 @@ const IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE = 'IPC_UTILS_COMLINK_REMOVE_PROX
 const IPC_UTILS_COMLINK_REMOVE_LISTENERS = 'IPC_UTILS_COMLINK_REMOVE_LISTENERS';
 
 /**
- *
+ * @param {Process} proc
  * @param {String} method
  */
 function requestExecute(proc, method, ...args) {
@@ -50,8 +50,9 @@ function dotHandler(proc, parentPropKey, target, propKey) {
 }
 
 /**
- *
  * @param {Process} proc
+ *
+ * @returns {object}
  */
 function setupProxy(proc) {
   return new Proxy(
@@ -75,10 +76,11 @@ function setupProxy(proc) {
 function attachHandler(proc = process) {
   /**
  * @param {Process} proc
- * @param {Object} m
- * @param {String} m.method - method to call
- * @param {Array} m.args - method arguments
- * @param {String} m.uuid - the method uuid;
+ * @param {Object} message
+ * @param {String} message.method - method to call
+ * @param {Array} message.args - method arguments
+ * @param {String} message.uuid - the method uuid
+ * @param {boolean} [message.release] - if the message is a release command
  */
   const messageHandler = async (message) => {
     if (message.release) {
@@ -105,16 +107,22 @@ function attachHandler(proc = process) {
   return messageHandler;
 }
 
+/** @typedef {{
+  [k: string]: () => Promise<any>;
+} & {
+  [IPC_UTILS_COMLINK_REMOVE_LISTENERS]: () => Promise<void>;
+  [IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE]: () => Promise<void>;
+}} ComlinkProxy */
+
 /**
+ * Creates a proxy which you can access your child process with.
  * @param {Process} proc - defaults to current process
+ *
+ * @returns {ComlinkProxy}
  */
 function setupComlink(proc = process) {
   const proxy = setupProxy.call(this, proc);
   const handler = attachHandler.call(this, proc);
-  /**
-   * @param {{handler: function, proxy: Object}} options
-   * @param {Process} proc - defaults to current process
-   */
   const removeComlinkCommand = async () => {
     if (proc.exitCode === null) {
       await proxy[IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE]();
@@ -127,6 +135,10 @@ function setupComlink(proc = process) {
   return proxy;
 }
 
+/**
+ * Removes the comlink message handler on child process
+ * @param {ComlinkProxy} proxy
+ */
 function removeComlink(proxy) {
   return proxy[IPC_UTILS_COMLINK_REMOVE_LISTENERS]();
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.7
+
+- add some jsdocs
+
 ## 2.1.6
 
 - updated readme
