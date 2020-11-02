@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.5
+
+- fix: process message handler was not removed properly.
+- updated uuid package
+- run yarn upgrade
+
 ## 2.1.4
 
 - typo inside readme example

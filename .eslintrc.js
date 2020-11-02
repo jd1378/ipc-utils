@@ -2,15 +2,15 @@ module.exports = {
   env: {
     node: true,
     es6: true,
-    jest: true
+    jest: true,
   },
   extends: [
-    "airbnb-base"
+    'airbnb-base',
   ],
-  plugins: ["prettier"],
+  plugins: ['prettier'],
   rules: {
-    "class-methods-use-this": "off",
-    "no-plusplus": "off",
-    "no-unused-vars": "off"
-  }
+    'class-methods-use-this': 'off',
+    'no-plusplus': 'off',
+    'no-unused-vars': 'off',
+  },
 };

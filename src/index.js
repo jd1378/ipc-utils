@@ -1,13 +1,11 @@
 /**
  * @typedef {import("process")} Process
  */
-const uuidv4 = require('uuid').v4;
+const { v4: uuidv4 } = require('uuid');
 const get = require('lodash/get');
 
-const symbols = {
-  removeListeners: Symbol('removeListeners'),
-  removeChild: Symbol('removeChildListener'),
-};
+const IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE = 'IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE';
+const IPC_UTILS_COMLINK_REMOVE_LISTENERS = 'IPC_UTILS_COMLINK_REMOVE_LISTENERS';
 
 /**
  *
@@ -18,7 +16,7 @@ function requestExecute(proc, method, ...args) {
     return Promise.reject(new Error('Process undefined'));
   }
   return new Promise((resolve, reject) => {
-    if (method === symbols.removeChild) {
+    if (method === IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE) {
       proc.send({ release: true }, () => resolve());
       return;
     }
@@ -38,12 +36,11 @@ function requestExecute(proc, method, ...args) {
     proc.send({ method, uuid, args }, (error) => {
       if (error) {
         reject(error);
-        proc.off(eventHandler);
+        process.off('message', eventHandler);
       }
     });
   });
 }
-
 
 function dotHandler(proc, parentPropKey, target, propKey) {
   if (propKey in target) return target[propKey];
@@ -61,7 +58,7 @@ function setupProxy(proc) {
     {},
     {
       get(target, propKey) {
-        if (propKey === symbols.removeListeners) {
+        if (propKey === IPC_UTILS_COMLINK_REMOVE_LISTENERS) {
           return target[propKey];
         }
 
@@ -71,7 +68,6 @@ function setupProxy(proc) {
     },
   );
 }
-
 
 /**
  * @param {Process} proc - defaults to current process
@@ -109,7 +105,6 @@ function attachHandler(proc = process) {
   return messageHandler;
 }
 
-
 /**
  * @param {Process} proc - defaults to current process
  */
@@ -122,20 +117,19 @@ function setupComlink(proc = process) {
    */
   const removeComlinkCommand = async () => {
     if (proc.exitCode === null) {
-      await proxy[symbols.removeChild]();
+      await proxy[IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE]();
       proc.off('message', handler);
     }
   };
 
-  proxy[symbols.removeListeners] = removeComlinkCommand;
+  proxy[IPC_UTILS_COMLINK_REMOVE_LISTENERS] = removeComlinkCommand;
 
   return proxy;
 }
 
 function removeComlink(proxy) {
-  return proxy[symbols.removeListeners]();
+  return proxy[IPC_UTILS_COMLINK_REMOVE_LISTENERS]();
 }
-
 
 module.exports = {
   setupComlink,

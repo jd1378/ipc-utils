@@ -12,7 +12,7 @@
         "<node_internals>/**"
       ],
       "stopOnEntry": true,
-      "program": "${workspaceFolder}\\examples\\example1.js",
+      "program": "${workspaceFolder}\\examples\\example2\\index.js",
       "cwd": "${workspaceFolder}\\examples",
       "console": "integratedTerminal",
       // "console": "internalConsole",
