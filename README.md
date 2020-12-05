@@ -6,6 +6,8 @@ makes using child_process using fork easy
 
 Read the changelogs [here](https://github.com/jd1378/ipc-utils/blob/master/CHANGELOG.md)
 
+**I highly recommend moving to v2.1.9 and above**. previous versions have performance issues. I have changed how it works under the hood but it should not break how you use it.
+
 ### A note on usage
 
 for using `setupComlink`, you have to bind `this` to the method, so it knows where to look for functions and properties when the proxy is accessed. if you don't, it will lookup `global` by default (or whatever `this` refers to in that context I guess, so don't do guess work and always bind). after calling `setupComlink` it will return a proxy which you can use it to access your child process properties and methods. currently you should call both functions and properties as methods for it to work.

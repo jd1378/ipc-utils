@@ -3,10 +3,15 @@
  */
 const { v4: uuidv4 } = require('uuid');
 const get = require('lodash/get');
+const { EventEmitter } = require('events');
 
 const IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE =
   'IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE';
 const IPC_UTILS_COMLINK_REMOVE_LISTENERS = 'IPC_UTILS_COMLINK_REMOVE_LISTENERS';
+
+const responseEmitter = new EventEmitter();
+// TODO: add a timeout for execution
+// TODO: remove all listeners when child process is exited
 
 /**
  * @param {Process} proc
@@ -24,20 +29,17 @@ function requestExecute(proc, method, ...args) {
 
     const uuid = uuidv4();
     const eventHandler = (m) => {
-      if (m.uuid === uuid) {
-        proc.off('message', eventHandler);
-        if (m.error) {
-          reject(m.error);
-        } else {
-          resolve(m.result);
-        }
+      if (m.error) {
+        reject(m.error);
+      } else {
+        resolve(m.result);
       }
     };
-    proc.on('message', eventHandler);
+    responseEmitter.once(uuid, eventHandler);
     proc.send({ method, uuid, args }, (error) => {
       if (error) {
         reject(error);
-        proc.off('message', eventHandler);
+        responseEmitter.off(uuid, eventHandler);
       }
     });
   });
@@ -93,19 +95,23 @@ function attachHandler(proc = process) {
       return;
     }
     const target = get(this, message.method);
-    if (typeof target === 'function') {
-      try {
-        const result = await target.call(this, ...message.args);
-        proc.send({ uuid: message.uuid, error: null, result });
-      } catch (error) {
-        proc.send({ uuid: message.uuid, error, result: null });
+    if (target) {
+      if (typeof target === 'function') {
+        try {
+          const result = await target.call(this, ...message.args);
+          proc.send({ uuid: message.uuid, error: null, result });
+        } catch (error) {
+          proc.send({ uuid: message.uuid, error, result: null });
+        }
+      } else if (typeof target !== 'undefined') {
+        proc.send({
+          uuid: message.uuid,
+          error: null,
+          result: target,
+        });
       }
-    } else if (typeof target !== 'undefined') {
-      proc.send({
-        uuid: message.uuid,
-        error: null,
-        result: target,
-      });
+    } else if (message.uuid) {
+      responseEmitter.emit(message.uuid, message);
     }
   };
   proc.on('message', messageHandler);
@@ -126,13 +132,13 @@ function attachHandler(proc = process) {
  * @returns {ComlinkProxy}
  */
 function setupComlink(proc = process) {
-  const proxy = setupProxy.call(this, proc);
   const handler = attachHandler.call(this, proc);
+  const proxy = setupProxy.call(this, proc);
   const removeComlinkCommand = async () => {
     if (proc.exitCode === null) {
       await proxy[IPC_UTILS_COMLINK_REMOVE_PROXY_CHILD_SIDE]();
-      proc.off('message', handler);
     }
+    proc.off('message', handler);
   };
 
   proxy[IPC_UTILS_COMLINK_REMOVE_LISTENERS] = removeComlinkCommand;

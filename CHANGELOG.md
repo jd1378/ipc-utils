@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.9
+
+- Changes how the messages are handled, It is expected to fix some performance issue seen in production. It can now handle a lot more commands in less time.
+
 ## 2.1.8
 
 - fix the bug introduced by 2.1.5 ...

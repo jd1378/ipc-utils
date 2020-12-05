@@ -1,11 +1,12 @@
 {
   "name": "ipc-utils",
-  "version": "2.1.8",
+  "version": "2.1.9",
   "description": "makes using child_process easy",
   "main": "src/index.js",
   "scripts": {
     "test": "jest",
     "test-dbg": "jest --detectOpenHandles",
+    "test-mem": "node --trace-warnings --expose-gc ./node_modules/jest/bin/jest.js --runInBand --logHeapUsage ./test/stress.test.js",
     "example1": "node ./examples/example1",
     "example2": "node ./examples/example2"
   },
