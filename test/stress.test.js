@@ -43,7 +43,7 @@ describe('setupComlink', () => {
     }
   });
 
-  it('can wait for 1000 commands', async () => {
+  it('can wait for 100k commands', async () => {
     const pending = [];
     for (let i = 0; i < 100000; i++) {
       pending.push(parent.proxy.longTask());
