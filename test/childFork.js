@@ -1,13 +1,4 @@
-const { setupComlink } = require('../src/index');
+const Child = require('./Child');
 
-class ChildClass {
-  constructor() {
-    this.parent = setupComlink.call(this);
-  }
-
-  test() {
-    return 'canDo';
-  }
-}
-
-const child = new ChildClass();
+// eslint-disable-next-line no-unused-vars
+const child = new Child();
