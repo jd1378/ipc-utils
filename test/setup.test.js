@@ -1,4 +1,3 @@
-const { promisify } = require('util');
 const path = require('path');
 const { fork } = require('child_process');
 const { setupComlink, removeComlink } = require('../src/index');
@@ -30,12 +29,12 @@ describe('setupComlink', () => {
   }
 
   beforeEach(() => {
-    childProcess = fork(
-      path.join(__dirname, 'childFork.js'), [], { stdio: 'inherit', execArgv: [] },
-    );
+    childProcess = fork(path.join(__dirname, 'childFork.js'), [], {
+      stdio: 'inherit',
+      execArgv: [],
+    });
     testClass = new TestClass(childProcess);
   });
-
 
   afterEach(async () => {
     await testClass.removeProxy();
