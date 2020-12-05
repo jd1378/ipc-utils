@@ -29,7 +29,7 @@ describe('setupComlink', () => {
   }
 
   beforeEach(() => {
-    childProcess = fork(path.join(__dirname, 'childFork.js'), [], {
+    childProcess = fork(path.join(__dirname, 'ChildFork.js'), [], {
       stdio: 'inherit',
       execArgv: [],
     });
